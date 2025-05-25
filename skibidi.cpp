@@ -3,7 +3,6 @@
 #include <stdlib.h>
 
 int main(void) {
-    // Open connection to X server
     Display *display = XOpenDisplay(NULL);
     if (!display) {
         fprintf(stderr, "Cannot open display\n");
@@ -12,7 +11,6 @@ int main(void) {
 
     int screen = DefaultScreen(display);
 
-    // Create the window
     Window window = XCreateSimpleWindow(
         display, RootWindow(display, screen),
         100, 100,              // x, y position
@@ -22,13 +20,10 @@ int main(void) {
         WhitePixel(display, screen)   // background color
     );
 
-    // Select input events to listen for (close, expose, keypress)
     XSelectInput(display, window, ExposureMask | KeyPressMask | StructureNotifyMask);
 
-    // Map (show) the window
     XMapWindow(display, window);
 
-    // Main event loop
     int running = 1;
     while (running) {
         XEvent event;
@@ -36,11 +31,9 @@ int main(void) {
 
         switch (event.type) {
             case Expose:
-                // Window needs to be redrawn (do nothing for now)
                 break;
             case KeyPress:
-                // Exit on any key press (for demo)
-                //running = 0;
+                running = 0;
                 break;
             case DestroyNotify:
                 running = 0;
@@ -48,7 +41,6 @@ int main(void) {
         }
     }
 
-    // Cleanup
     XDestroyWindow(display, window);
     XCloseDisplay(display);
 
